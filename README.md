@@ -1,4 +1,4 @@
-# 🌐 Basic Social Media Web App
+# 🌐 NoteNest
 
 <p align="center">
 
@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-A full-stack social media web application built using <strong>Node.js</strong>, <strong>Express.js</strong>, <strong>MongoDB</strong>, and <strong>EJS</strong>. This project helped me learn authentication, CRUD operations, middleware, database relationships, and deploying a complete backend application.
+NoteNest A full-stack web application built using <strong>Node.js</strong>, <strong>Express.js</strong>, <strong>MongoDB</strong>, and <strong>EJS</strong>. This project helped me learn authentication, CRUD operations, middleware, database relationships, and deploying a complete backend application.
 </p>
 
 ---
