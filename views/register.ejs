@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your NoteNest account.">
+    <title>Create account · NoteNest</title>
+    <link rel="stylesheet" href="/stylesheet/style.css">
+</head>
+<body class="auth-page">
+    <main class="auth-shell">
+        <section class="auth-brand-panel">
+            <a class="brand brand-light" href="/">NoteNest</a>
+            <div class="brand-copy">
+                <span class="eyebrow">YOUR SPACE, YOUR VOICE</span>
+                <h1>Share what matters.</h1>
+                <p>Keep your thoughts close, discover new posts, and stay connected in one simple space.</p>
+            </div>
+            <div class="brand-orb orb-one"></div>
+            <div class="brand-orb orb-two"></div>
+        </section>
+
+        <section class="auth-form-panel">
+            <div class="auth-form-wrap">
+                <div class="mobile-brand"><a class="brand" href="/">NoteNest</a></div>
+                <div class="auth-heading">
+                    <span class="eyebrow">GET STARTED</span>
+                    <h2>Create your account</h2>
+                    <p>Join NoteNest and make your first post.</p>
+                </div>
+
+                <% if (error) { %><div class="alert alert-error" role="alert"><%= error %></div><% } %>
+                <% if (success) { %><div class="alert alert-success" role="status"><%= success %></div><% } %>
+
+                <form class="auth-form" action="/register" method="POST">
+                    <div class="field-grid">
+                        <label class="field"><span>Full name</span><input class="input" type="text" name="name" placeholder="Alex Mercer" autocomplete="name" required></label>
+                        <label class="field"><span>Username</span><input class="input" type="text" name="username" placeholder="alex" autocomplete="username" required></label>
+                    </div>
+                    <label class="field"><span>Age</span><input class="input" type="number" name="age" min="13" max="120" placeholder="21" required></label>
+                    <label class="field"><span>Email address</span><input class="input" type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label>
+                    <label class="field"><span>Password</span><input class="input" type="password" name="password" placeholder="At least 6 characters" autocomplete="new-password" minlength="6" required></label>
+                    <button class="primary-btn" type="submit">Create account <span>→</span></button>
+                </form>
+
+                <p class="auth-switch">Already have an account? <a href="/login">Sign in</a></p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

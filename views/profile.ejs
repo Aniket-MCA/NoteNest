@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home · NoteNest</title>
+    <link rel="stylesheet" href="/stylesheet/profile.css">
+<script src="/javascript/mobileNav.js" defer></script>
+</head>
+<body class="app-page">
+    <header class="mobile-header">
+    <a class="brand" href="/profile">NoteNest</a>
+    <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-drawer">
+        <span></span><span></span><span></span>
+    </button>   
+</header>
+
+    <div class="mobile-overlay" aria-hidden="true"></div>
+<nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation">
+    <div class="drawer-head">
+        <div>
+            <span class="drawer-label">NAVIGATION</span>
+            <strong>NoteNest</strong>
+        </div>
+        <button class="drawer-close" type="button" aria-label="Close navigation">×</button>
+    </div>
+    <div class="drawer-profile">
+        <div class="drawer-avatar"><img src="/images/upload/<%= founduser.profilePic %>" alt=""></div>
+        <div><strong><%= founduser.name %></strong><span>@<%= founduser.username %></span></div>
+    </div>
+    <div class="drawer-nav">
+        <a href="/profile"><span>⌂</span> Home</a>
+        <a href="/mypost"><span>▤</span> My posts</a>
+        <a href="/profile/upload"><span>◎</span> Profile</a>
+    </div>
+    <a class="drawer-logout" href="/logout"><span>↪</span> Log out</a>
+</nav>
+<div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand sidebar-brand" href="/profile">NoteNest</a>
+            <nav class="side-nav" aria-label="Main navigation">
+                <a class="nav-item active" href="/profile"><span>⌂</span> Home</a>
+                <a class="nav-item" href="/mypost"><span>▤</span> My posts</a>
+                <a class="nav-item" href="/profile/upload"><span>◎</span> Profile</a>
+            </nav>
+            <a class="nav-item nav-logout" href="/logout"><span>↪</span> Log out</a>
+        </aside>
+
+        <main class="feed">
+            <div class="page-heading">
+                <div><span class="eyebrow">YOUR FEED</span><h1>Home</h1></div>
+                <div class="desktop-profile-mini"><img src="/images/upload/<%= founduser.profilePic %>" alt=""><div><strong><%= founduser.name %></strong><small>@<%= founduser.username %></small></div></div>
+            </div>
+
+            <% if (notice) { %><div class="notice"><span>!</span><%= notice %></div><% } %>
+
+            <section class="composer card">
+                <div class="composer-head">
+                    <img class="avatar" src="/images/upload/<%= founduser.profilePic %>" alt="<%= founduser.name %>">
+                    <div><strong><%= founduser.name %></strong><small>Share something with the community</small></div>
+                </div>
+                <form action="/post" method="POST">
+                    <textarea name="postdata" maxlength="1000" placeholder="What's on your mind", style="resize:none;", <%= founduser.name.split(' ')[0] %>?" aria-label="Post content" required></textarea>
+                    <div class="composer-footer"><small>Keep it thoughtful · 1000 characters max</small><button class="primary-btn small-btn" type="submit">Post <span>→</span></button></div>
+                </form>
+            </section>
+
+            <div class="section-heading"><div><h2>Latest posts</h2><p>See what people are sharing.</p></div><a href="/mypost">View my posts →</a></div>
+
+            <section class="post-list">
+                <% if (!post.length) { %>
+                    <div class="empty-state card"><div class="empty-icon">✦</div><h3>Your feed is quiet</h3><p>Be the first to share something with the community.</p></div>
+                <% } %>
+                <% post.forEach(function(item){ %>
+                    <article class="post-card card">
+                        <div class="post-head">
+                            <img class="avatar" src="/images/upload/<%= item.user && item.user.profilePic ? item.user.profilePic : 'profile_placeholder.jpg' %>" alt="" onerror="this.onerror=null;this.src='/images/upload/profile_placeholder.jpg';">
+                            <div class="post-author"><strong><%= item.user ? item.user.name : 'NoteNest user' %></strong><span>@<%= item.user ? item.user.username : 'user' %> · <%= new Date(item.date).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %></span></div>
+                        </div>
+                        <p class="post-content"><%= item.content %></p>
+                        <div class="post-actions">
+                            <form action="/like/<%= item._id %>" method="POST">
+                                <button class="like-btn <%= item.likes.some(function(id){ return id.toString() === founduser._id.toString(); }) ? 'liked' : '' %>" type="submit" aria-label="Like post">
+                                    <span><%= item.likes.some(function(id){ return id.toString() === founduser._id.toString(); }) ? '♥' : '♡' %></span>
+                                    <%= item.likes.length %>
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                <% }) %>
+            </section>
+        </main>
+
+        <aside class="right-panel">
+            <section class="profile-card card">
+                <div class="profile-cover"></div>
+                <div class="profile-body">
+                    <a class="avatar avatar-lg profile-avatar" href="/profile/upload"><img src="/images/upload/<%= founduser.profilePic %>" alt="<%= founduser.name %>"></a>
+                    <h2><%= founduser.name %></h2><p>@<%= founduser.username %></p>
+                    <div class="profile-stats"><div><strong><%= founduser.post.length %></strong><span>Posts</span></div><div><strong><%= founduser.age %></strong><span>Age</span></div></div>
+                    <a class="secondary-btn full-btn" href="/profile/upload">Update profile picture</a>
+                </div>
+            </section>
+            <p class="sidebar-note">NoteNest · A place for simple ideas and conversations.</p>
+        </aside>
+    </div>
+</body>
+</html>

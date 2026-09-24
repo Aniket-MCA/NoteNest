@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Edit post · NoteNest</title><link rel="stylesheet" href="/stylesheet/profile.css">
+<script src="/javascript/mobileNav.js" defer></script></head>
+<body class="app-page"><header class="mobile-header">
+    <a class="brand" href="/profile">NoteNest</a>
+    <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-drawer">
+        <span></span><span></span><span></span>
+    </button>
+</header><div class="mobile-overlay" aria-hidden="true"></div>
+<nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation">
+    <div class="drawer-head">
+        <div>
+            <span class="drawer-label">NAVIGATION</span>
+            <strong>NoteNest</strong>
+        </div>
+        <button class="drawer-close" type="button" aria-label="Close navigation">×</button>
+    </div>
+    <div class="drawer-profile">
+        <div class="drawer-avatar"><img src="/images/upload/<%= founduser.profilePic %>" alt=""></div>
+        <div><strong><%= founduser.name %></strong><span>@<%= founduser.username %></span></div>
+    </div>
+    <div class="drawer-nav">
+        <a href="/profile"><span>⌂</span> Home</a>
+        <a href="/mypost"><span>▤</span> My posts</a>
+        <a href="/profile/upload"><span>◎</span> Profile</a>
+    </div>
+    <a class="drawer-logout" href="/logout"><span>↪</span> Log out</a>
+</nav>
+<div class="page-brand"><a class="brand" href="/profile">NoteNest</a></div><div class="center-page"><div class="editor-card card"><div class="editor-heading"><a href="/mypost">← My posts</a><span class="eyebrow">EDIT POST</span><h1>Refine your thought</h1><p>Make your update, then save it when you're ready.</p></div><% if (notice) { %><div class="notice"><span>!</span><%= notice %></div><% } %><form class="editor-form" action="/update/<%= post._id %>" method="POST"><textarea class="editor-area" name="postdata" maxlength="1000" required><%= post.content %></textarea><div class="editor-footer"><span>1000 characters max</span><div><a class="secondary-btn" href="/mypost">Cancel</a><button class="primary-btn small-btn" type="submit">Save changes <span>→</span></button></div></div></form></div></div></body></html>
