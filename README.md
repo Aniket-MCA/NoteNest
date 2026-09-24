@@ -67,6 +67,12 @@ NoteNest A full-stack web application built using <strong>Node.js</strong>, <str
 
 ---
 
+## Upload profile Picture
+
+<p align="center">
+<img src="screenshots/profile_upload.png" width="850">
+</p>
+
 # ✨ Features
 
 ### 👤 User Authentication
