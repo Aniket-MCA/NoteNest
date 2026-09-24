@@ -24,9 +24,9 @@ NoteNest A full-stack web application built using <strong>Node.js</strong>, <str
 
 🌍 **Live Website**
 
-**https://basic-social-media-4.onrender.com**
+**https://notenest-y8re.onrender.com/**
 <p>
-  <a href="https://basic-social-media-4.onrender.com">
+  <a href="https://notenest-y8re.onrender.com/">
     <img src="https://img.shields.io/badge/Live_Demo-Visit_App-success?style=for-the-badge">
   </a>
 </p>
