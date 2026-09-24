@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
 
 :root{--ink:#172033;--muted:#7b8799;--line:#e7ebf1;--surface:#fff;--bg:#f5f7fb;--brand:#5b5ce2;--brand-dark:#4647c9;--soft:#eef0ff;--red:#e84b65;--shadow:0 12px 35px rgba(32,42,70,.06)}
@@ -169,3 +170,85 @@ body.menu-open{overflow:hidden}
   .mobile-header .brand{margin-right:auto}
   .menu-toggle{display:flex;margin-left:auto}
 }
+=======
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-image: url("justin-wolff.jpg");
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
+    background:#2a2a2a;
+    color:white;
+    padding:20px;
+}
+
+.top{
+    height:50px;
+    display:flex;
+    align-items:center;
+}
+
+.logout-btn{
+    color:white;
+    background:red;
+    height:30px;
+    width:70px;
+    border-radius:8px;
+    margin-left: auto;
+    text-decoration: none;      
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+
+.postarea{
+    background:transparent;
+    height:80px;
+    width:40vw;
+    border-radius:5px;
+    border:2px solid #888;
+    color:white;
+    padding:13px;
+    resize:none;
+    margin-bottom:5px;
+    outline:none;
+}
+
+.postcontainer{
+    display:flex;
+    flex-direction:column;
+}
+
+.createbt{
+    background: rgb(30, 159, 202);
+    border:none;
+    height:30px;
+    width:100px;
+    border-radius:5px;
+    outline:none;
+    margin-bottom:30px;
+}
+
+.posts{
+    background:#333;
+    height:90px;
+    width:40vw;
+    border-radius:5px;
+    border:2px solid #666;
+    color:white;
+    padding:13px;
+    resize:none;
+    margin-bottom:5px;
+    outline:none;
+}
+
+.like-btn{
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+}
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d

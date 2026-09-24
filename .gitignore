@@ -1,4 +1,9 @@
 node_modules/
+<<<<<<< HEAD
 .env
 .env.*
 !.env.example
+=======
+.env/
+.gitignore/
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d

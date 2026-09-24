@@ -1,4 +1,5 @@
 const express = require("express");
+<<<<<<< HEAD
 const path = require("path");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
@@ -29,10 +30,33 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+=======
+const app = express();
+const path = require("path");
+const userModel = require("./models/user");
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const userPost = require("./models/post");
+const multerconfig = require("./config/multerconfig");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db.js");
+const dns = require("dns");
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
+dotenv.config();
+
+app.set("view engine", "ejs");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d
 app.use(express.static(path.join(__dirname, "public")));
 
 connectDB();
 
+<<<<<<< HEAD
 function renderError(res, status, title, message, backUrl = "/profile") {
     return res.status(status).render("errors/error", { status, title, message, backUrl });
 }
@@ -129,10 +153,94 @@ app.post("/register", async function (req, res) {
 
 app.get("/login", function (req, res) {
     res.render("login", getAuthOptions(req));
+=======
+app.use(cookieParser());
+
+app.get("/", function(req, res){
+    res.render("register", {
+        error: "",
+        success: ""
+    });
+});
+app.post("/register", async function(req, res){
+
+    try{
+
+        let { name, username, age, email, password } = req.body;
+
+        if(!name || !username || !age || !email || !password){
+            return res.status(400).render("register",{
+                error:"All fields are required.",
+                success:""
+            });
+        }
+
+        let user = await userModel.findOne({email:email});
+
+        if(user){
+            return res.status(409).render("register",{
+                error:"Email is already registered.",
+                success:""
+            });
+        }
+
+        bcrypt.genSalt(10,function(err,salt){
+
+            if(err){
+                return res.status(500).render("register",{
+                    error:"Unable to generate password salt.",
+                    success:""
+                });
+            }
+
+            bcrypt.hash(password,salt,async function(err,hash){
+
+                if(err){
+                    return res.status(500).render("register",{
+                        error:"Unable to hash password.",
+                        success:""
+                    });
+                }
+
+                await userModel.create({
+                    name:name,
+                    username:username,
+                    age:age,
+                    email:email,
+                    password:hash
+                });
+
+                res.render("register",{
+                    error:"",
+                    success:"Registration successful! Please login."
+                });
+
+            });
+
+        });
+
+    }
+    catch(err){
+
+        console.log(err);
+
+        res.status(500).render("register",{
+            error:"Something went wrong.",
+            success:""
+        });
+
+    }
+
+});
+
+app.get("/login", function (req, res) {
+    res.render("login");
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d
 });
 
 app.post("/login", async function (req, res) {
     try {
+<<<<<<< HEAD
         const email = String(req.body.email || "").trim().toLowerCase();
         const password = String(req.body.password || "");
         const user = await userModel.findOne({ email });
@@ -164,10 +272,37 @@ app.post("/login", async function (req, res) {
             error: "Something went wrong. Please try again.",
             success: ""
         });
+=======
+        let user = await userModel.findOne({ email: req.body.email });
+
+        // user might not exist - handle before calling bcrypt.compare
+        if (!user) {
+            return res.status(401).send("Email or password is incorrect");
+        }
+
+        bcrypt.compare(req.body.password, user.password, function (err, result) {
+            if (err) {
+                console.error(err);
+                return res.status(500).send("Something went wrong, please try again.");
+            }
+
+            if (result === true) {
+                let token = jwt.sign({ email: user.email, userid: user._id }, "shhhh");
+                res.cookie("token", token);
+                res.redirect("/profile");
+            } else {
+                res.status(401).send("Email or password is incorrect");
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Something went wrong, please try again.");
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d
     }
 });
 
 app.get("/logout", function (req, res) {
+<<<<<<< HEAD
     res.clearCookie("token");
     res.redirect("/login?success=You%20have%20been%20logged%20out.");
 });
@@ -186,11 +321,58 @@ app.get("/profile", isLoggedIn, async function (req, res) {
     } catch (err) {
         console.error(err);
         renderError(res, 500, "Could not load your feed", "Please refresh the page and try again.");
+=======
+    res.cookie("token", "");
+    res.redirect("/login");
+});
+
+function isLoggedIn(req, res, next) { // this is middleware
+    if (!req.cookies.token) {
+        return res.redirect("/login");
+    }
+
+    try {
+        let userdata = jwt.verify(req.cookies.token, "shhhh");
+        req.user = userdata;
+        next();
+    } catch (err) {
+        // invalid or expired token
+        res.cookie("token", "");
+        return res.redirect("/login");
+    }
+}
+
+app.get("/mypost", isLoggedIn, async function (req, res) { // protected route
+    try {
+        let founduser = await userModel.findOne({ email: req.user.email }).populate("post");
+        if (!founduser) {
+            return res.status(404).send("User not found");
+        }
+        res.render("mypost", { founduser });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Something went wrong loading your posts.");
+    }
+});
+
+app.get("/profile", isLoggedIn, async function (req, res) { // protected route
+    try {
+        let founduser = await userModel.findOne({ email: req.user.email }).populate("post");
+        if (!founduser) {
+            return res.status(404).send("User not found");
+        }
+        let post = await userPost.find().populate("user");
+        res.render("profile", { founduser, post });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Something went wrong loading your profile.");
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d
     }
 });
 
 app.post("/post", isLoggedIn, async function (req, res) {
     try {
+<<<<<<< HEAD
         const content = String(req.body.postdata || "").trim();
         if (!content) return res.redirect("/profile?notice=Write%20something%20before%20posting.");
         if (content.length > 1000) return res.redirect("/profile?notice=Posts%20must%20be%201000%20characters%20or%20less.");
@@ -199,11 +381,22 @@ app.post("/post", isLoggedIn, async function (req, res) {
         if (!user) return renderError(res, 404, "Account not found", "Your account could not be found.", "/login");
 
         const post = await userPost.create({ user: user._id, content });
+=======
+        let user = await userModel.findOne({ email: req.user.email });
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+        let post = await userPost.create({
+            user: user._id,
+            content: req.body.postdata,
+        });
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d
         user.post.push(post._id);
         await user.save();
         res.redirect("/profile");
     } catch (err) {
         console.error(err);
+<<<<<<< HEAD
         renderError(res, 500, "Could not create post", "Please try again.");
     }
 });
@@ -238,11 +431,36 @@ app.get("/mypost", isLoggedIn, async function (req, res) {
     } catch (err) {
         console.error(err);
         renderError(res, 500, "Could not load your posts", "Please refresh and try again.");
+=======
+        res.status(500).send("Something went wrong while creating your post.");
+    }
+});
+
+app.get("/like/:postid", isLoggedIn, async function (req, res) {
+    try {
+        let post = await userPost.findOne({ _id: req.params.postid }).populate("user");
+        if (!post) {
+            return res.status(404).send("Post not found");
+        }
+
+        if (post.likes.indexOf(req.user.userid) === -1) {
+            post.likes.push(req.user.userid);
+        } else {
+            let index = post.likes.indexOf(req.user.userid);
+            post.likes.splice(index, 1);
+        }
+        await post.save();
+        res.redirect("/profile");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Something went wrong while updating the like.");
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d
     }
 });
 
 app.get("/edit/:postid", isLoggedIn, async function (req, res) {
     try {
+<<<<<<< HEAD
         const [post, founduser] = await Promise.all([
             userPost.findOne({ _id: req.params.postid, user: req.user.userid }).populate("user"),
             userModel.findOne({ email: req.user.email })
@@ -253,11 +471,22 @@ app.get("/edit/:postid", isLoggedIn, async function (req, res) {
     } catch (err) {
         console.error(err);
         renderError(res, 500, "Could not load the editor", "Please try again.");
+=======
+        let post = await userPost.findOne({ _id: req.params.postid }).populate("user");
+        if (!post) {
+            return res.status(404).send("Post not found");
+        }
+        res.render("edit", { post });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Something went wrong loading the post.");
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d
     }
 });
 
 app.post("/update/:postid", isLoggedIn, async function (req, res) {
     try {
+<<<<<<< HEAD
         const content = String(req.body.postdata || "").trim();
         if (!content) return res.redirect(`/edit/${req.params.postid}?notice=Post%20cannot%20be%20empty.`);
         if (content.length > 1000) return res.redirect(`/edit/${req.params.postid}?notice=Posts%20must%20be%201000%20characters%20or%20less.`);
@@ -291,10 +520,37 @@ app.post("/profile/upload", isLoggedIn, multerconfig.single("image"), async func
     try {
         if (!req.file) return res.redirect("/profile/upload?notice=Please%20choose%20a%20valid%20image.");
 
+=======
+        let updated = await userPost.findOneAndUpdate(
+            { _id: req.params.postid },
+            { content: req.body.postdata }
+        );
+        if (!updated) {
+            return res.status(404).send("Post not found");
+        }
+        res.redirect("/profile");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Something went wrong while updating the post.");
+    }
+});
+
+app.get("/profile/upload", isLoggedIn, function (req, res) {
+    res.render("uploadProfile");
+});
+
+// isLoggedIn now runs BEFORE multer, so unauthenticated users can't trigger an upload
+app.post("/profile/upload", isLoggedIn, multerconfig.single("image"), async function (req, res) {
+    try {
+        if (!req.file) {
+            return res.status(400).send("No file uploaded");
+        }
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d
         await userModel.findOneAndUpdate(
             { email: req.user.email },
             { profilePic: req.file.filename }
         );
+<<<<<<< HEAD
 
         res.redirect("/profile");
     } catch (err) {
@@ -318,3 +574,22 @@ app.use(function (err, req, res, next) {
 app.listen(PORT, function () {
     console.log(`Server running on port ${PORT}`);
 });
+=======
+        res.redirect("/profile");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Something went wrong while uploading your profile picture.");
+    }
+});
+
+// catch-all error handler (for anything that still slips through)
+app.use(function (err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send("Something went wrong on our end.");
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, function () {
+    console.log(`Server running on the PORT ${PORT}`);
+});
+>>>>>>> b757ea66bb9ecb7181eca0ddca76f87fcadb830d
